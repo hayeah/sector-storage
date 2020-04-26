@@ -9,6 +9,7 @@ import (
 	"golang.org/x/xerrors"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
+	"github.com/filecoin-project/lotus/lib/nullreader"
 	"github.com/filecoin-project/specs-actors/actors/abi"
 	storage2 "github.com/filecoin-project/specs-storage/storage"
 
@@ -92,6 +93,12 @@ func (l *LocalWorker) NewSector(ctx context.Context, sector abi.SectorID) error 
 	}
 
 	return sb.NewSector(ctx, sector)
+}
+
+func (l *LocalWorker) AddDummyPiece(ctx context.Context, sector abi.SectorID, epcs []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize) (abi.PieceInfo, error) {
+	r := io.LimitReader(&nullreader.Reader{}, int64(sz))
+
+	return l.AddPiece(ctx, sector, epcs, sz, r)
 }
 
 func (l *LocalWorker) AddPiece(ctx context.Context, sector abi.SectorID, epcs []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize, r io.Reader) (abi.PieceInfo, error) {
