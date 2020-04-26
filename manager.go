@@ -122,17 +122,18 @@ func New(ctx context.Context, ls stores.LocalStorage, si stores.SectorIndex, cfg
 	go m.runSched()
 
 	localTasks := []sealtasks.TaskType{
-		sealtasks.TTAddPiece, sealtasks.TTCommit1, sealtasks.TTFinalize,
+		// sealtasks.TTAddPiece,
+		sealtasks.TTCommit1, sealtasks.TTFinalize,
 	}
-	if sc.AllowPreCommit1 {
-		localTasks = append(localTasks, sealtasks.TTPreCommit1)
-	}
-	if sc.AllowPreCommit2 {
-		localTasks = append(localTasks, sealtasks.TTPreCommit2)
-	}
-	if sc.AllowCommit {
-		localTasks = append(localTasks, sealtasks.TTCommit2)
-	}
+	// if sc.AllowPreCommit1 {
+	// 	localTasks = append(localTasks, sealtasks.TTPreCommit1)
+	// }
+	// if sc.AllowPreCommit2 {
+	// 	localTasks = append(localTasks, sealtasks.TTPreCommit2)
+	// }
+	// if sc.AllowCommit {
+	// 	localTasks = append(localTasks, sealtasks.TTCommit2)
+	// }
 
 	err = m.AddWorker(ctx, NewLocalWorker(WorkerConfig{
 		SealProof: cfg.SealProofType,
@@ -272,6 +273,10 @@ func (m *Manager) NewSector(ctx context.Context, sector abi.SectorID) error {
 	return nil
 }
 
+func (m *Manager) AddDummyPiece(ctx context.Context, sector abi.SectorID, existingPieces []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize) (abi.PieceInfo, error) {
+	return abi.PieceInfo{}, xerrors.Errorf("not implemented")
+}
+
 func (m *Manager) AddPiece(ctx context.Context, sector abi.SectorID, existingPieces []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize, r io.Reader) (abi.PieceInfo, error) {
 	// TODO: consider multiple paths vs workers when initially allocating
 
@@ -301,7 +306,7 @@ func (m *Manager) AddPiece(ctx context.Context, sector abi.SectorID, existingPie
 
 	// TODO: select(candidateWorkers, ...)
 	// TODO: remove the sectorbuilder abstraction, pass path directly
-	return worker.AddPiece(ctx, sector, existingPieces, sz, r)
+	return worker.AddDummyPiece(ctx, sector, existingPieces, sz)
 }
 
 func (m *Manager) SealPreCommit1(ctx context.Context, sector abi.SectorID, ticket abi.SealRandomness, pieces []abi.PieceInfo) (out storage.PreCommit1Out, err error) {
