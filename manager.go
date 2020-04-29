@@ -123,7 +123,8 @@ func New(ctx context.Context, ls stores.LocalStorage, si stores.SectorIndex, cfg
 
 	localTasks := []sealtasks.TaskType{
 		// sealtasks.TTAddPiece,
-		sealtasks.TTCommit1, sealtasks.TTFinalize,
+		// sealtasks.TTCommit1,
+		// sealtasks.TTFinalize,
 	}
 	// if sc.AllowPreCommit1 {
 	// 	localTasks = append(localTasks, sealtasks.TTPreCommit1)

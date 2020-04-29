@@ -96,6 +96,8 @@ func (l *LocalWorker) NewSector(ctx context.Context, sector abi.SectorID) error 
 }
 
 func (l *LocalWorker) AddDummyPiece(ctx context.Context, sector abi.SectorID, epcs []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize) (abi.PieceInfo, error) {
+	log.Info("Add piece:", sector.Number)
+
 	r := io.LimitReader(&nullreader.Reader{}, int64(sz))
 
 	return l.AddPiece(ctx, sector, epcs, sz, r)
@@ -111,6 +113,8 @@ func (l *LocalWorker) AddPiece(ctx context.Context, sector abi.SectorID, epcs []
 }
 
 func (l *LocalWorker) SealPreCommit1(ctx context.Context, sector abi.SectorID, ticket abi.SealRandomness, pieces []abi.PieceInfo) (out storage2.PreCommit1Out, err error) {
+	log.Info("SealPreCommit1:", sector.Number)
+
 	sb, err := l.sb()
 	if err != nil {
 		return nil, err
@@ -120,6 +124,8 @@ func (l *LocalWorker) SealPreCommit1(ctx context.Context, sector abi.SectorID, t
 }
 
 func (l *LocalWorker) SealPreCommit2(ctx context.Context, sector abi.SectorID, phase1Out storage2.PreCommit1Out) (cids storage2.SectorCids, err error) {
+	log.Info("SealPreCommit2:", sector.Number)
+
 	sb, err := l.sb()
 	if err != nil {
 		return storage2.SectorCids{}, err
@@ -129,6 +135,8 @@ func (l *LocalWorker) SealPreCommit2(ctx context.Context, sector abi.SectorID, p
 }
 
 func (l *LocalWorker) SealCommit1(ctx context.Context, sector abi.SectorID, ticket abi.SealRandomness, seed abi.InteractiveSealRandomness, pieces []abi.PieceInfo, cids storage2.SectorCids) (output storage2.Commit1Out, err error) {
+	log.Info("SealCommit1:", sector.Number)
+
 	sb, err := l.sb()
 	if err != nil {
 		return nil, err
@@ -138,6 +146,8 @@ func (l *LocalWorker) SealCommit1(ctx context.Context, sector abi.SectorID, tick
 }
 
 func (l *LocalWorker) SealCommit2(ctx context.Context, sector abi.SectorID, phase1Out storage2.Commit1Out) (proof storage2.Proof, err error) {
+	log.Info("SealCommit2:", sector.Number)
+
 	sb, err := l.sb()
 	if err != nil {
 		return nil, err
@@ -147,6 +157,8 @@ func (l *LocalWorker) SealCommit2(ctx context.Context, sector abi.SectorID, phas
 }
 
 func (l *LocalWorker) FinalizeSector(ctx context.Context, sector abi.SectorID) error {
+	log.Info("FinalizeSector:", sector.Number)
+
 	sb, err := l.sb()
 	if err != nil {
 		return err
