@@ -27,6 +27,7 @@ type WorkerConfig struct {
 }
 
 type LocalWorker struct {
+	UUID       string
 	scfg       *ffiwrapper.Config
 	storage    stores.Store
 	localStore *stores.Local
@@ -42,6 +43,7 @@ func NewLocalWorker(wcfg WorkerConfig, store stores.Store, local *stores.Local, 
 	}
 
 	return &LocalWorker{
+		UUID: string(local.ID),
 		scfg: &ffiwrapper.Config{
 			SealProofType: wcfg.SealProof,
 		},
@@ -80,6 +82,10 @@ func (l *localWorkerPathProvider) AcquireSector(ctx context.Context, sector abi.
 			}
 		}
 	}, nil
+}
+
+func (l *LocalWorker) ID() string {
+	return l.UUID
 }
 
 func (l *LocalWorker) sb() (ffiwrapper.Storage, error) {
@@ -209,6 +215,7 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 	}
 
 	return storiface.WorkerInfo{
+		ID:       l.UUID,
 		Hostname: hostname,
 		Resources: storiface.WorkerResources{
 			MemPhysical: mem.Total,

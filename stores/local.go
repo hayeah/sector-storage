@@ -52,6 +52,7 @@ const MetaFile = "sectorstore.json"
 var PathTypes = []SectorFileType{FTUnsealed, FTSealed, FTCache}
 
 type Local struct {
+	ID           ID
 	localStorage LocalStorage
 	index        SectorIndex
 	urls         []string
@@ -100,6 +101,8 @@ func (st *Local) OpenPath(ctx context.Context, p string) error {
 	}
 
 	// TODO: Check existing / dedupe
+
+	st.ID = meta.ID
 
 	out := &path{
 		local: p,

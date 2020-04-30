@@ -2,6 +2,7 @@ package storiface
 
 type WorkerInfo struct {
 	Hostname string
+	ID       string
 
 	Resources WorkerResources
 }
