@@ -121,11 +121,11 @@ func New(ctx context.Context, ls stores.LocalStorage, si stores.SectorIndex, cfg
 
 	go m.runSched()
 
-	localTasks := []sealtasks.TaskType{
-		// sealtasks.TTAddPiece,
-		// sealtasks.TTCommit1,
-		// sealtasks.TTFinalize,
-	}
+	// localTasks := []sealtasks.TaskType{
+	// sealtasks.TTAddPiece,
+	// sealtasks.TTCommit1,
+	// sealtasks.TTFinalize,
+	// }
 	// if sc.AllowPreCommit1 {
 	// 	localTasks = append(localTasks, sealtasks.TTPreCommit1)
 	// }
@@ -136,13 +136,13 @@ func New(ctx context.Context, ls stores.LocalStorage, si stores.SectorIndex, cfg
 	// 	localTasks = append(localTasks, sealtasks.TTCommit2)
 	// }
 
-	err = m.AddWorker(ctx, NewLocalWorker(WorkerConfig{
-		SealProof: cfg.SealProofType,
-		TaskTypes: localTasks,
-	}, stor, lstor, si))
-	if err != nil {
-		return nil, xerrors.Errorf("adding local worker: %w", err)
-	}
+	// err = m.AddWorker(ctx, NewLocalWorker(WorkerConfig{
+	// 	SealProof: cfg.SealProofType,
+	// 	TaskTypes: localTasks,
+	// }, stor, lstor, si))
+	// if err != nil {
+	// 	return nil, xerrors.Errorf("adding local worker: %w", err)
+	// }
 
 	return m, nil
 }

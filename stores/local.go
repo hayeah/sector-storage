@@ -56,7 +56,8 @@ type Local struct {
 	index        SectorIndex
 	urls         []string
 
-	paths map[ID]*path
+	paths           map[ID]*path
+	remoteBindPaths map[ID]string
 
 	localLk sync.RWMutex
 }
@@ -72,8 +73,16 @@ func NewLocal(ctx context.Context, ls LocalStorage, index SectorIndex, urls []st
 		urls:         urls,
 
 		paths: map[ID]*path{},
+
+		remoteBindPaths: map[ID]string{},
 	}
 	return l, l.open(ctx)
+}
+
+// BindRemoteStore informs the local storage that a remote store in the index
+// may be accessed with a local path (e.g. NFS or CephFS)
+func (st *Local) BindRemoteStore(remoteStoreID ID, localPath string) {
+	st.remoteBindPaths[remoteStoreID] = localPath
 }
 
 func (st *Local) OpenPath(ctx context.Context, p string) error {
@@ -214,8 +223,18 @@ func (st *Local) AcquireSector(ctx context.Context, sid abi.SectorID, existing S
 
 		for _, si := range sis {
 			p, ok := st.paths[si.ID]
+
 			if !ok {
-				continue
+				// If the storage is not local, check if it could be accessed with
+				// remotely mounted path
+				bindPath, ok := st.remoteBindPaths[si.ID]
+				if !ok {
+					continue
+				}
+
+				p = &path{
+					local: bindPath,
+				}
 			}
 
 			if p.local == "" { // TODO: can that even be the case?
