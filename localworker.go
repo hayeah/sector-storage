@@ -84,6 +84,10 @@ func (l *localWorkerPathProvider) AcquireSector(ctx context.Context, sector abi.
 	}, nil
 }
 
+func (l *LocalWorker) Fetch(context.Context, abi.SectorID, stores.SectorFileType, bool) error {
+	return xerrors.New("Fetch not implemented")
+}
+
 func (l *LocalWorker) ID() string {
 	return l.UUID
 }
